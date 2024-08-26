@@ -583,6 +583,8 @@ require('lazy').setup({
         javascriptreact = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },
         typescriptreact = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },
+        templ = { 'templ' },
+        go = { 'gopls' },
       },
     },
   },
