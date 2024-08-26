@@ -501,7 +501,6 @@ require('lazy').setup({
         bashls = {},
         eslint = {},
         html = {},
-        htmx = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
