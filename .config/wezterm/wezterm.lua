@@ -18,5 +18,7 @@ config = {
 		top = 10,
 	},
 	window_decorations = "RESIZE",
+	initial_cols = 120,
+	initial_rows = 40,
 }
 return config

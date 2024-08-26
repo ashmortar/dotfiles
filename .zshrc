@@ -31,17 +31,15 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
-
 source ~/fzf-git.sh/fzf-git.sh
 
-# activate mise for managing versions of node, python, etc
+# activate [mise](https://mise.jdx.dev) for managing versions of node, python, etc
 eval "$(~/.local/bin/mise activate zsh)"
 
-# source .env for mercury
-source ~/greatexpectationslabs/mercury/.env
-
+ # make ls better via eza
 alias ls="eza --color=always --icons=always -1 --hyperlink -a --git-ignore -l --no-permissions --no-user --group-directories-first --time=accessed --time-style=relative"
 
+# better shell history with [atuin](https://atuin.sh/)
 . "$HOME/.atuin/bin/env"
 
 eval "$(atuin init zsh)"

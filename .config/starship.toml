@@ -102,6 +102,7 @@ format = '[$symbol$branch ]($style)'
 
 [golang]
 symbol = " "
+format = "[$symbol($version )]($style)"
 
 [hg_branch]
 symbol = " "
@@ -123,6 +124,7 @@ symbol = " "
 
 [package]
 symbol = " "
+format = "[$symbol$version ]($style)"
 
 [perl]
 symbol = " "
