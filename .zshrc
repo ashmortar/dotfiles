@@ -45,3 +45,7 @@ alias ls="eza --color=always --icons=always -1 --hyperlink -a --git-ignore -l --
 . "$HOME/.atuin/bin/env"
 
 eval "$(atuin init zsh)"
+
+# setup config alias
+alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
+config config status.showUntrackedFiles no

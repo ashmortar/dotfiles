@@ -6,7 +6,7 @@ but basically on the initial machine:
 
 ```sh
 git init --bare $HOME/.myconf
-alias config='usr/bin/git' --git-dir=$HOME/.myconf/ --work-tree=$HOME
+alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 config config status.showUntrackedFiles no
 ```
 
@@ -25,6 +25,6 @@ on a new machine to do setup
 git clone --separate-git-dir=$HOME/.myconf https://github.com/ashmortar/dotfiles $HOME/myconf-tmp
 cp ~/myconf-tmp ~
 rm -r ~/myconf-tmp/
-alias config='usr/bin/git' --git-dir=$HOME/.myconf/ --work-tree=$HOME
+alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 config config status.showUntrackedFiles no
 ```
