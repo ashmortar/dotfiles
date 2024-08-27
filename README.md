@@ -22,7 +22,9 @@ config push
 on a new machine to do setup
 
 ```sh
-git clone --separate-git-dir=$HOME/.myconf https://github.com/ashmortar/dotfiles $HOME/myconf-tmp
+git clone --separate-git-dir=$HOME/.myconf \
+  https://github.com/ashmortar/dotfiles \
+  $HOME/myconf-tmp
 cp ~/myconf-tmp ~
 rm -r ~/myconf-tmp/
 alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
