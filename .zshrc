@@ -47,3 +47,11 @@ eval "$(atuin init zsh)"
 # setup config alias
 alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 config config status.showUntrackedFiles no
+
+# any machine local configs that cannot be sent to a public
+# git repo go into ~/.zshrc.local. test if ~/.zshrc.local exists, if not create it
+if [ ! -f ~/.zshrc.local ]; then
+   touch ~/.zshrc.local
+fi
+# now source it
+source ~/.zshrc.local
