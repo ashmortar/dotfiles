@@ -1,6 +1,8 @@
 
 # Ashmortar's dotfiles repo
 
+---
+
 strategy is taken from [this hacker news thread](https://news.ycombinator.com/item?id=11070797)
 but basically on the initial machine:
 
