@@ -9,7 +9,16 @@ return {
     cmd = 'Copilot',
     event = 'InsertEnter',
     config = function()
-      require('copilot').setup {}
+      require('copilot').setup {
+        suggestion = { enabled = false },
+        panel = { auto_refresh = true, position = 'right' },
+      }
+    end,
+  },
+  {
+    'zbirenbaum/copilot-cmp',
+    config = function()
+      require('copilot_cmp').setup()
     end,
   },
   {
