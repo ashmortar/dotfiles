@@ -8,7 +8,7 @@ config = {
 	tab_bar_at_bottom = true,
 	window_close_confirmation = "NeverPrompt",
 	font = wezterm.font("Hasklug Nerd Font", { weight = "Regular", stretch = "Normal", style = "Normal" }),
-	color_scheme = "Gruvbox Dark Modern Hybrid",
+	-- color_scheme = "Gruvbox Dark Modern Hybrid",
 	colors = {
 		-- Base colors leaning towards Gruvbox with Dark Modern influence
 		foreground = "#EBDBB2", -- Gruvbox light foreground

@@ -23,6 +23,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'mfussenegger/nvim-dap-python',
   },
   keys = function(_, keys)
     local dap = require 'dap'
@@ -64,6 +65,7 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'debugpy',
       },
     }
 
@@ -88,6 +90,21 @@ return {
         },
       },
     }
+
+    require('dap-python').setup 'python'
+    table.insert(dap.configurations.python, {
+      type = 'python',
+      request = 'launch',
+      name = 'Python: Current File (Integrated Terminal)',
+      program = '${file}',
+      pythonPath = function()
+        local venv_path = vim.fn.getcwd() .. '/.venv/bin/python'
+        if vim.fn.filereadable(venv_path) == 1 then
+          return venv_path
+        end
+        return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+      end,
+    })
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close

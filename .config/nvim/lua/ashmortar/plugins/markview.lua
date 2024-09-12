@@ -16,7 +16,7 @@ return {
     local presets = require 'markview.presets'
     markview.setup {
       modes = { 'n', 'i', 'no', 'c' },
-      hybrid_modes = { 'i' },
+      hybrid_modes = { 'i', 'v' },
       highlight_groups = presets.highlight_groups.h_decorated,
       headings = presets.headings.decorated_labels,
       tables = presets.tables.border_single_corners,
