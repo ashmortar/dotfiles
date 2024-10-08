@@ -150,21 +150,43 @@ return {
     --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+    local util = require 'lspconfig/util'
+
+    local function get_python_path(workspace)
+      local path = util.path
+      local python_path = path.join(workspace, '.venv', 'bin', 'python')
+      if vim.fn.executable(python_path) == 1 then
+        return python_path
+      end
+      return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+    end
+
     local servers = {
       clangd = {},
       gopls = {},
       pyright = {
+        root_dir = function(fname)
+          return util.root_pattern '.git'(fname) -- Use the .git folder as the project root
+            or util.root_pattern 'services'(fname) -- Fallback to 'services' directory
+            or util.path.dirname(fname) -- Default to the directory of the current file
+        end,
         settings = {
           python = {
             analysis = {
-              -- using mypy for static and ruff for formatting
-              typeCheckingMode = 'basic',
               autoSearchPaths = true,
               useLibraryCodeForTypes = true,
               diagnosticMode = 'workspace',
+              extraPaths = {
+                '${workspaceFolder}/services/common',
+                '${workspaceFolder}/services/ge_cloud',
+              },
             },
           },
         },
+        before_init = function(_, config)
+          config.settings.python.pythonPath = get_python_path(config.root_dir)
+        end,
       },
       rust_analyzer = {},
       -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
