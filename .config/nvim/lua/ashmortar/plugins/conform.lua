@@ -34,6 +34,7 @@ return { -- Autoformat
       typescriptreact = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },
       templ = { 'templ' },
       go = { 'gopls' },
+      css = { 'prettierd', 'prettier' },
     },
   },
 }

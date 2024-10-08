@@ -17,93 +17,9 @@ return {
     markview.setup {
       modes = { 'n', 'i', 'no', 'c' },
       hybrid_modes = { 'i', 'v' },
-      highlight_groups = presets.highlight_groups.h_decorated,
-      headings = presets.headings.decorated_labels,
-      tables = presets.tables.border_single_corners,
-      horizontal_rules = {
-        parts = {
-          {
-            type = 'repeating',
-            text = '─',
-
-            direction = 'left',
-            hl = {
-              'Gradient1',
-              'Gradient2',
-              'Gradient3',
-              'Gradient4',
-              'Gradient5',
-              'Gradient6',
-              'Gradient7',
-              'Gradient8',
-              'Gradient9',
-              'Gradient10',
-            },
-
-            repeat_amount = function()
-              local w = vim.api.nvim_win_get_width(0)
-              local l = vim.api.nvim_buf_line_count(0)
-
-              l = vim.fn.strchars(tostring(l)) + 4
-
-              return math.floor((w - (l + 3)) / 2)
-            end,
-          },
-          {
-            type = 'text',
-            text = '  ',
-          },
-          {
-            type = 'repeating',
-            text = '─',
-
-            direction = 'right',
-            hl = {
-              'Gradient1',
-              'Gradient2',
-              'Gradient3',
-              'Gradient4',
-              'Gradient5',
-              'Gradient6',
-              'Gradient7',
-              'Gradient8',
-              'Gradient9',
-              'Gradient10',
-            },
-
-            repeat_amount = function()
-              local w = vim.api.nvim_win_get_width(0)
-              local l = vim.api.nvim_buf_line_count(0)
-
-              l = vim.fn.strchars(tostring(l)) + 4
-
-              return math.ceil((w - (l + 3)) / 2)
-            end,
-          },
-        },
-      },
-      Checkboxes = {
-        enable = true,
-        checked = {
-          text = '✔',
-          hl = 'TabLineSel',
-        },
-        unchecked = {},
-        pending = {},
-        custom = {
-          {
-            match = '~',
-            text = '◕',
-            hl = 'CheckboxProgress',
-          },
-        },
-      },
-      callbacks = {
-        on_enable = function(_, win)
-          vim.wo[win].conceallevel = 2
-          vim.wo[win].concealcursor = 'nc'
-        end,
-      },
+      checkboxes = presets.checkboxes.nerd,
+      headings = presets.headings.arrowed,
+      horizontal_rules = presets.horizontal_rules.arrowed,
     }
   end,
 }
