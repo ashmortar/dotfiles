@@ -27,7 +27,7 @@ return { -- Autoformat
     formatters_by_ft = {
       lua = { 'stylua' },
       -- Conform can also run multiple formatters sequentially
-      python = { 'ruff' },
+      python = { 'ruff_format', 'ruff_fix' },
       javascript = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },
       javascriptreact = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },
       typescript = { 'eslintd', 'eslint', 'prettierd', 'prettier', stop_after_first = true },

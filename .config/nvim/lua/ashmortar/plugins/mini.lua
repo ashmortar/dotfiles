@@ -61,9 +61,8 @@ return { -- Collection of various small independent plugins/modules
     starter.setup {
       evaluate_single = true,
       items = {
-        starter.sections.recent_files(5, false),
-        starter.sections.recent_files(5, true),
-        starter.sections.sessions(5, true),
+        starter.sections.recent_files(3, true),
+        starter.sections.sessions(3, true),
         starter.sections.telescope(),
       },
       content_hooks = {
@@ -72,8 +71,6 @@ return { -- Collection of various small independent plugins/modules
       },
       footer = os.date(),
       header = table.concat({
-        [[                                                   ]],
-        [[                                              ___  ]],
         [[                                           ,o88888 ]],
         [[                                        ,o8888888' ]],
         [[                  ,:o:o:oooo.        ,8O88Pd8888"  ]],
@@ -93,8 +90,6 @@ return { -- Collection of various small independent plugins/modules
         [[    .. . ....:."' `   .  . . ''                    ]],
         [[  . . . ...."'                                     ]],
         [[  .. . ."'                                         ]],
-        [[ .                                                 ]],
-        [[                                                   ]],
       }, '\n'),
     }
     -- ... and there is more!

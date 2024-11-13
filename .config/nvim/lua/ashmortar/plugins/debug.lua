@@ -1,7 +1,3 @@
--- debug.lua
--- Debugger configuration using nvim-dap
--- Supports Go, Python, Flask, Node.js (JavaScript/TypeScript), and Chrome (for PWA debugging)
-
 return {
   'mfussenegger/nvim-dap',
   dependencies = {
@@ -15,19 +11,62 @@ return {
   keys = function()
     local dap, dapui = require 'dap', require 'dapui'
     return {
-      { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
-      { '<F10>', dap.step_over, desc = 'Debug: Step Over' },
-      { '<F11>', dap.step_into, desc = 'Debug: Step Into' },
-      { '<F12>', dap.step_out, desc = 'Debug: Step Out' },
-      { '<Leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
+      { '<leader>dc', dap.continue, desc = 'Debug: [c]ontinue' },
+      { '<leader>do', dap.step_over, desc = 'Debug: Step [o]ver' },
+      { '<leader>di', dap.step_into, desc = 'Debug: Step [i]nto' },
+      { '<leader>dO', dap.step_out, desc = 'Debug: Step [O]ut' },
+      { '<leader>db', dap.toggle_breakpoint, desc = 'Debug: Toggle [b]reakpoint' },
       {
-        '<Leader>B',
+        '<leader>dB',
         function()
           dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
         end,
-        desc = 'Debug: Set Conditional Breakpoint',
+        desc = 'Debug: Set [B]reakpoint Condition',
       },
-      { '<Leader>dr', dapui.toggle, desc = 'Debug: Toggle UI' },
+      { '<leader>dr', dapui.toggle, desc = 'Debug: Toggle [r]epl UI' },
+      {
+        '<leader>de',
+        function()
+          dapui.eval()
+        end,
+        desc = 'Debug: [e]valuate Expression',
+      },
+      {
+        '<leader>df',
+        function()
+          dapui.float_element()
+        end,
+        desc = 'Debug: [f]loat Element',
+      },
+      {
+        '<leader>dI',
+        function()
+          local config = dap.configurations.python[1]
+          print('Current Python path: ' .. vim.fn.system(config.pythonPath()))
+          print('debugpy path: ' .. require('mason-registry').get_package('debugpy'):get_install_path())
+        end,
+        desc = 'Debug: Show [I]nfo',
+      },
+      {
+        '<leader>dt',
+        function()
+          dap.configurations.python = dap.configurations.python or {}
+          vim.ui.select({ 'Python: Current File (Debug)', 'Python: pytest' }, {
+            prompt = 'Select debug configuration:',
+          }, function(choice)
+            if choice then
+              for _, config in ipairs(dap.configurations.python) do
+                if config.name == choice then
+                  vim.notify('Selected debug config: ' .. choice, vim.log.levels.INFO)
+                  dap.run(config)
+                  break
+                end
+              end
+            end
+          end)
+        end,
+        desc = 'Debug: Select [t]est Config',
+      },
     }
   end,
   config = function()
@@ -58,14 +97,6 @@ return {
           disconnect = '⏏',
         },
       },
-      mappings = {
-        expand = { '<CR>', '<2-LeftMouse>' },
-        open = 'o',
-        remove = 'd',
-        edit = 'e',
-        repl = 'r',
-        toggle = 't',
-      },
       layouts = {
         {
           elements = {
@@ -86,51 +117,15 @@ return {
           position = 'bottom',
         },
       },
+      floating = {
+        max_height = nil,
+        max_width = nil,
+        border = 'single',
+        mappings = {
+          close = { 'q', '<Esc>' },
+        },
+      },
     }
-
-    -- Python configuration
-    require('dap-python').setup 'python'
-    table.insert(dap.configurations.python, {
-      type = 'python',
-      request = 'launch',
-      name = 'Python: Current File',
-      program = '${file}',
-      pythonPath = function()
-        local venv_path = vim.fn.getcwd() .. '/.venv/bin/python'
-        if vim.fn.filereadable(venv_path) == 1 then
-          return venv_path
-        end
-        return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
-      end,
-    })
-
-    -- Custom Flask configuration
-    table.insert(dap.configurations.python, {
-      type = 'python',
-      request = 'launch',
-      name = 'Flask: mercury_flask',
-      module = 'flask',
-      env = {
-        FLASK_APP = 'mercury.api:get_app()',
-        FLASK_ENV = 'development',
-        FLASK_DEBUG = '1',
-      },
-      args = {
-        'run',
-        '--host=localhost',
-        '--no-reload',
-        '--without-threads',
-      },
-      pythonPath = function()
-        local venv_path = vim.fn.getcwd() .. '/.venv/bin/python'
-        if vim.fn.filereadable(venv_path) == 1 then
-          return venv_path
-        end
-        return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
-      end,
-      cwd = '${workspaceFolder}/services/ge_cloud',
-      jinja = true,
-    })
 
     -- Function to load environment variables from .env file
     local function load_env_file()
@@ -146,99 +141,94 @@ return {
       end
     end
 
-    -- Load environment variables before starting debug session
-    dap.listeners.before.launch.load_env = function(session, config)
-      load_env_file()
+    -- Python configuration
+    local function setup_python_adapter()
+      local debugpy_path = require('mason-registry').get_package('debugpy'):get_install_path()
+      require('dap-python').setup(debugpy_path .. '/venv/bin/python')
+
+      dap.configurations.python = {
+        {
+          type = 'python',
+          request = 'launch',
+          name = 'Python: Current File (Debug)',
+          program = '${file}',
+          console = 'integratedTerminal',
+          pythonPath = function()
+            local venv_path = vim.fn.getcwd() .. '/.venv/bin/python'
+            if vim.fn.filereadable(venv_path) == 1 then
+              vim.notify('Using venv python: ' .. venv_path, vim.log.levels.INFO)
+              return venv_path
+            end
+            local python_path = vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+            vim.notify('Using system python: ' .. python_path, vim.log.levels.INFO)
+            return python_path
+          end,
+          justMyCode = false,
+          env = {
+            PYTHONPATH = vim.fn.getcwd(),
+          },
+        },
+        {
+          type = 'python',
+          request = 'launch',
+          name = 'Python: pytest',
+          module = 'pytest',
+          args = {
+            '-v',
+            '${file}',
+            '--no-cov', -- Disable coverage to avoid interference
+          },
+          console = 'integratedTerminal',
+          pythonPath = function()
+            local venv_path = vim.fn.getcwd() .. '/.venv/bin/python'
+            if vim.fn.filereadable(venv_path) == 1 then
+              vim.notify('Using venv python: ' .. venv_path, vim.log.levels.INFO)
+              return venv_path
+            end
+            local python_path = vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
+            vim.notify('Using system python: ' .. python_path, vim.log.levels.INFO)
+            return python_path
+          end,
+          justMyCode = false,
+          env = {
+            PYTHONPATH = vim.fn.getcwd(),
+          },
+        },
+      }
     end
+
+    setup_python_adapter()
 
     -- Go configuration
     require('dap-go').setup()
 
-    -- Node.js configuration for JavaScript and TypeScript
-    dap.adapters.node2 = {
-      type = 'executable',
-      command = 'node',
-      args = { vim.fn.stdpath 'data' .. '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js' },
-    }
+    -- Add error logging
+    dap.listeners.after['event_initialized']['custom'] = function()
+      vim.notify('Debug session initialized', vim.log.levels.INFO)
+    end
 
-    dap.configurations.javascript = {
-      {
-        name = 'Launch',
-        type = 'node2',
-        request = 'launch',
-        program = '${file}',
-        cwd = vim.fn.getcwd(),
-        sourceMaps = true,
-        protocol = 'inspector',
-        console = 'integratedTerminal',
-      },
-      {
-        -- For this to work you need to make sure the node process is started with the `--inspect` flag.
-        name = 'Attach to process',
-        type = 'node2',
-        request = 'attach',
-        processId = require('dap.utils').pick_process,
-      },
-    }
+    dap.listeners.before['event_terminated']['custom'] = function()
+      vim.notify('Debug session about to terminate', vim.log.levels.WARN)
+    end
 
-    dap.configurations.typescript = {
-      {
-        name = 'ts-node (Node.js)',
-        type = 'node2',
-        request = 'launch',
-        cwd = vim.loop.cwd(),
-        runtimeArgs = { '-r', 'ts-node/register' },
-        runtimeExecutable = 'node',
-        args = { '--inspect', '${file}' },
-        sourceMaps = true,
-        skipFiles = { '<node_internals>/**', 'node_modules/**' },
-      },
-      {
-        name = 'Jest (Node.js)',
-        type = 'node2',
-        request = 'launch',
-        cwd = vim.loop.cwd(),
-        runtimeArgs = { '--inspect-brk', '${workspaceFolder}/node_modules/.bin/jest' },
-        runtimeExecutable = 'node',
-        args = { '${file}', '--runInBand', '--coverage', 'false' },
-        sourceMaps = true,
-        port = 9229,
-        skipFiles = { '<node_internals>/**', 'node_modules/**' },
-      },
-    }
+    dap.listeners.after['event_terminated']['custom'] = function()
+      vim.notify('Debug session terminated', vim.log.levels.WARN)
+    end
 
-    -- Chrome configuration (for PWA debugging)
-    dap.adapters.chrome = {
-      type = 'executable',
-      command = 'node',
-      args = { vim.fn.stdpath 'data' .. '/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js' },
-    }
+    dap.listeners.before['event_exited']['custom'] = function(session, body)
+      vim.notify(string.format('Debug session exited with code: %s', body.exitCode or 'unknown'), vim.log.levels.WARN)
+    end
 
-    dap.configurations.javascriptreact = { -- change this to javascript if needed
-      {
-        type = 'chrome',
-        request = 'attach',
-        program = '${file}',
-        cwd = vim.fn.getcwd(),
-        sourceMaps = true,
-        protocol = 'inspector',
-        port = 9222,
-        webRoot = '${workspaceFolder}',
-      },
-    }
+    -- Test debug logging
+    dap.listeners.before['test_start'] = dap.listeners.before['test_start'] or {}
+    dap.listeners.before['test_start']['custom'] = function(session)
+      vim.notify('Starting test debug session for: ' .. vim.inspect(session.config.args), vim.log.levels.INFO)
+    end
 
-    dap.configurations.typescriptreact = { -- change this to typescript if needed
-      {
-        type = 'chrome',
-        request = 'attach',
-        program = '${file}',
-        cwd = vim.fn.getcwd(),
-        sourceMaps = true,
-        protocol = 'inspector',
-        port = 9222,
-        webRoot = '${workspaceFolder}',
-      },
-    }
+    -- Load environment variables before starting debug session
+    dap.listeners.before.launch.load_env = function(_, _)
+      load_env_file()
+    end
 
     -- Automatically open UI
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open

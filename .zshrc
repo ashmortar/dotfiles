@@ -48,6 +48,10 @@ eval "$(atuin init zsh)"
 alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 config config status.showUntrackedFiles no
 
+export PATH=$PATH:$GOPATH/bin
+
+export PATH="$PATH:$GOBIN"
+
 # any machine local configs that cannot be sent to a public
 # git repo go into ~/.zshrc.local. test if ~/.zshrc.local exists, if not create it
 if [ ! -f ~/.zshrc.local ]; then

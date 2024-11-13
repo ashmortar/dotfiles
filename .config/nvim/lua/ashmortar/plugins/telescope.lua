@@ -52,6 +52,8 @@ return { -- Fuzzy Finder (files, lsp, etc)
       --  All the info you're looking for is in `:help telescope.setup()`
       --
       defaults = {
+        no_ignore = true,
+        hidden = true,
         mappings = {
           i = { ['<c-t>'] = open_with_trouble },
           n = { ['<c-t>'] = open_with_trouble },
