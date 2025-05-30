@@ -1,0 +1,138 @@
+# Performance profiling (uncomment to debug slow startup)
+# zmodload zsh/zprof
+
+# ============ Core Settings ============
+# History configuration
+HISTSIZE=50000
+SAVEHIST=50000
+HISTFILE=~/.zsh_history
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt SHARE_HISTORY
+
+# Better defaults
+setopt AUTO_CD
+setopt INTERACTIVE_COMMENTS
+setopt NO_BEEP
+
+# ============ Environment ============
+export EDITOR="nvim"
+export VISUAL="nvim"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS specific
+export HOMEBREW_NO_ANALYTICS=1
+{{- else if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# WSL2 specific
+export BROWSER="wslview"
+{{- end }}
+
+# ============ Tool Initialization ============
+# Mise (must be early for path setup)
+[[ -f ~/.local/bin/mise ]] && eval "$(~/.local/bin/mise activate zsh)"
+
+# Starship prompt
+command -v starship &>/dev/null && eval "$(starship init zsh)"
+
+# Zoxide (better cd)
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+
+# Direnv (project-specific env vars)
+command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
+
+# ============ Completions & Plugins ============
+# Plugin loading
+{{- if eq .chezmoi.os "darwin" }}
+[[ -f $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+  source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+[[ -f $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+  source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+{{- else }}
+[[ -f ~/.local/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+  source ~/.local/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+[[ -f ~/.local/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+  source ~/.local/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+{{- end }}
+
+# FZF configuration
+if command -v fzf &>/dev/null; then
+  source <(fzf --zsh)
+  export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
+  
+  # FZF theme
+  export FZF_DEFAULT_OPTS="
+    --height 40% --layout=reverse --border
+    --color=fg:#c0caf5,bg:#1a1b26,hl:#bb9af7
+    --color=fg+:#c0caf5,bg+:#292e42,hl+:#7dcfff
+    --color=info:#7aa2f7,prompt:#7dcfff,pointer:#f7768e
+    --color=marker:#9ece6a,spinner:#9ece6a,header:#9ece6a"
+  
+  # Better completions
+  _fzf_compgen_path() {
+    fd --hidden --exclude .git . "$1"
+  }
+  
+  _fzf_compgen_dir() {
+    fd --type=d --hidden --exclude .git . "$1"
+  }
+fi
+
+# ============ Aliases ============
+# Modern replacements
+alias ls="eza --icons=always --group-directories-first"
+alias ll="eza -la --icons=always --group-directories-first --git"
+alias tree="eza --tree --icons=always"
+alias cat="bat --style=plain"
+alias grep="rg"
+alias find="fd"
+alias cd="z"  # zoxide
+
+# Git shortcuts
+alias g="git"
+alias gs="git status"
+alias gd="git diff"
+alias gc="git commit"
+alias gp="git push"
+alias gl="git log --oneline --graph"
+
+# Tmux
+alias ta="tmux attach -t"
+alias ts="tmux new-session -s"
+alias tl="tmux list-sessions"
+
+# Neovim
+alias v="nvim"
+alias vim="nvim"
+
+# ============ Functions ============
+# Quick project switcher using fzf
+project() {
+  local selected
+  selected=$(fd --type d --max-depth 2 . ~/projects ~/work 2>/dev/null | fzf)
+  if [[ -n $selected ]]; then
+    cd "$selected"
+  fi
+}
+
+# Create directory and cd into it
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# ============ Atuin (Shell History) ============
+if command -v atuin &>/dev/null; then
+  [[ -f ~/.atuin/bin/env ]] && source ~/.atuin/bin/env
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# ============ Local Configuration ============
+# Machine-specific settings (not in version control)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Performance profiling (uncomment to see results)
+# zprof

@@ -1,0 +1,48 @@
+[user]
+    name = {{ .name | quote }}
+    email = {{ .email | quote }}
+
+[core]
+    editor = nvim
+    pager = delta
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    light = false
+    side-by-side = true
+    line-numbers = true
+
+[alias]
+    s = status -sb
+    a = add
+    c = commit
+    cm = commit -m
+    co = checkout
+    d = diff
+    ds = diff --staged
+    l = log --oneline --graph --decorate
+    p = push
+    pl = pull
+    # Interactive rebase with the last n commits
+    reb = "!r() { git rebase -i HEAD~$1; }; r"
+    # Undo last commit but keep changes
+    undo = reset HEAD~1 --mixed

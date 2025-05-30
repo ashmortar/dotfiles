@@ -1,0 +1,61 @@
+# Minimal, fast prompt focused on essentials
+format = """
+$directory\
+$git_branch\
+$git_status\
+$python\
+$nodejs\
+$golang\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "blue bold"
+
+[git_branch]
+format = "[$symbol$branch]($style) "
+symbol = " "
+style = "purple bold"
+
+[git_status]
+format = "[$all_status$ahead_behind]($style) "
+style = "red bold"
+conflicted = "="
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?"
+stashed = "$"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+symbol = "🐍 "
+style = "yellow bold"
+detect_extensions = ["py"]
+detect_files = ["pyproject.toml", "requirements.txt", "poetry.lock"]
+
+[nodejs]
+format = "[$symbol($version )]($style)"
+symbol = " "
+style = "green bold"
+
+[golang]
+format = "[$symbol($version )]($style)"
+symbol = " "
+style = "cyan bold"
+
+[cmd_duration]
+min_time = 2_000
+format = "[$duration]($style) "
+style = "yellow bold"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"

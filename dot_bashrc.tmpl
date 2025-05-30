@@ -1,0 +1,26 @@
+# Basic settings for compatibility
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# Mise activation
+[[ -f ~/.local/bin/mise ]] && eval "$(~/.local/bin/mise activate bash)"
+
+# Better history
+export HISTCONTROL=ignoreboth:erasedups
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+
+# Aliases (subset of zsh aliases)
+alias ls="eza --icons=always --group-directories-first"
+alias ll="eza -la --icons=always --group-directories-first --git"
+alias v="nvim"
+
+# Atuin for better history
+if command -v atuin &>/dev/null; then
+  [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+  [[ -f ~/.atuin/bin/env ]] && source ~/.atuin/bin/env
+  eval "$(atuin init bash)"
+fi
+
+# Local configuration
+[[ -f ~/.bashrc.local ]] && source ~/.bashrc.local

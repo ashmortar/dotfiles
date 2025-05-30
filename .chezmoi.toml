@@ -1,0 +1,13 @@
+[data]
+    name = "Aaron Ross"
+    email = "ashmortar@gmail.com"
+
+[edit]
+    command = "nvim"
+
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ .Destination }}", "{{ .Source }}"]
+
+[diff]
+    pager = "delta"

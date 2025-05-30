@@ -1,0 +1,132 @@
+#!/bin/bash
+set -eufo pipefail
+
+echo "🚀 Installing packages..."
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS setup
+if ! command -v brew &> /dev/null; then
+  echo "📦 Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+brew bundle --no-lock --file=/dev/stdin <<BREWFILE
+# Core tools
+brew "git"
+brew "curl"
+brew "wget"
+brew "neovim"
+brew "tmux"
+brew "ripgrep"
+brew "fd"
+brew "fzf"
+brew "eza"
+brew "bat"
+brew "jq"
+brew "starship"
+brew "zoxide"
+brew "direnv"
+brew "delta"
+brew "zsh-syntax-highlighting"
+brew "zsh-autosuggestions"
+
+# Fonts
+cask "font-jetbrains-mono-nerd-font"
+
+# Terminal
+cask "wezterm"
+BREWFILE
+
+{{- else if eq .chezmoi.os "linux" }}
+# Linux/WSL2 setup
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential git curl wget zsh jq tmux fontconfig unzip
+
+# Install packages not in apt or outdated
+command -v rg &>/dev/null || sudo apt install -y ripgrep
+
+# fd
+if ! command -v fd &>/dev/null; then
+  wget -q https://github.com/sharkdp/fd/releases/download/v9.0.0/fd_9.0.0_amd64.deb
+  sudo dpkg -i fd_9.0.0_amd64.deb && rm fd_9.0.0_amd64.deb
+fi
+
+# fzf
+command -v fzf &>/dev/null || sudo apt install -y fzf
+
+# eza
+if ! command -v eza &>/dev/null; then
+  sudo mkdir -p /etc/apt/keyrings
+  wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+  echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+  sudo apt update && sudo apt install -y eza
+fi
+
+# bat
+if ! command -v bat &>/dev/null && ! command -v batcat &>/dev/null; then
+  sudo apt install -y bat
+fi
+# Create bat symlink if needed (Ubuntu/Debian name it batcat)
+if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
+  sudo ln -sf $(which batcat) /usr/local/bin/bat
+fi
+
+# starship
+if ! command -v starship &>/dev/null; then
+  curl -sS https://starship.rs/install.sh | sh -s -- -y
+fi
+
+# zoxide
+if ! command -v zoxide &>/dev/null; then
+  curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+fi
+
+# direnv
+if ! command -v direnv &>/dev/null; then
+  curl -sfL https://direnv.net/install.sh | bash
+fi
+
+# delta
+if ! command -v delta &>/dev/null; then
+  wget -q https://github.com/dandavison/delta/releases/latest/download/git-delta_0.16.5_amd64.deb
+  sudo dpkg -i git-delta_0.16.5_amd64.deb && rm git-delta_0.16.5_amd64.deb
+fi
+
+# Neovim 0.11+
+if ! nvim --version 2>/dev/null | grep -q "0.1[1-9]"; then
+  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+  sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+  sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+  rm nvim-linux-x86_64.tar.gz
+fi
+
+# Install zsh plugins
+mkdir -p ~/.local/share/zsh/plugins
+[[ -d ~/.local/share/zsh/plugins/zsh-syntax-highlighting ]] || \
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.local/share/zsh/plugins/zsh-syntax-highlighting
+[[ -d ~/.local/share/zsh/plugins/zsh-autosuggestions ]] || \
+  git clone https://github.com/zsh-users/zsh-autosuggestions ~/.local/share/zsh/plugins/zsh-autosuggestions
+
+{{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# WSL2-specific: win32yank for clipboard
+if ! command -v win32yank.exe &>/dev/null; then
+  curl -sLo /tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/latest/download/win32yank-x64.zip
+  unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
+  chmod +x /tmp/win32yank.exe
+  sudo mv /tmp/win32yank.exe /usr/local/bin/
+fi
+{{- end }}
+{{- end }}
+
+# Install atuin (cross-platform)
+if ! command -v atuin &>/dev/null; then
+  echo "📚 Installing atuin..."
+  curl --proto '=https' --tlsv1.2 -LsSf https://github.com/atuinsh/atuin/releases/latest/download/atuin-installer.sh | sh
+fi
+
+# Install tmux plugin manager
+if [[ ! -d ~/.tmux/plugins/tpm ]]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+echo "✅ Package installation complete!"
