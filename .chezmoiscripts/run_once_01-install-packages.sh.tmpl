@@ -46,9 +46,12 @@ sudo apt install -y build-essential git curl wget zsh jq tmux fontconfig unzip
 command -v rg &>/dev/null || sudo apt install -y ripgrep
 
 # fd
-if ! command -v fd &>/dev/null; then
+if ! command -v fd &>/dev/null && ! command -v fdfind &>/dev/null; then
   wget -q https://github.com/sharkdp/fd/releases/download/v9.0.0/fd_9.0.0_amd64.deb
   sudo dpkg -i fd_9.0.0_amd64.deb && rm fd_9.0.0_amd64.deb
+elif command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+  # Create symlink for fd-find -> fd
+  sudo ln -sf $(which fdfind) /usr/local/bin/fd
 fi
 
 # fzf
@@ -88,8 +91,8 @@ fi
 
 # delta
 if ! command -v delta &>/dev/null; then
-  wget -q https://github.com/dandavison/delta/releases/latest/download/git-delta_0.16.5_amd64.deb
-  sudo dpkg -i git-delta_0.16.5_amd64.deb && rm git-delta_0.16.5_amd64.deb
+  wget -q https://github.com/dandavison/delta/releases/download/0.18.2/git-delta_0.18.2_amd64.deb
+  sudo dpkg -i git-delta_0.18.2_amd64.deb && rm git-delta_0.18.2_amd64.deb
 fi
 
 # Neovim 0.11+
