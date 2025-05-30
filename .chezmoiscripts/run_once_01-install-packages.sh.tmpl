@@ -118,6 +118,11 @@ if ! command -v win32yank.exe &>/dev/null; then
   chmod +x /tmp/win32yank.exe
   sudo mv /tmp/win32yank.exe /usr/local/bin/
 fi
+
+# WSL2-specifc: wslu for browser integration
+if ! command -v wslview &>/dev/null; then
+  sudo apt install -y wslu
+fi
 {{- end }}
 {{- end }}
 
