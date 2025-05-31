@@ -1,61 +1,164 @@
-# Minimal, fast prompt focused on essentials
+"$schema" = 'https://starship.rs/config-schema.json'
+
 format = """
+$username\
+$host\
 $directory\
 $git_branch\
 $git_status\
-$python\
-$nodejs\
+$fill\
+$package\
 $golang\
-$cmd_duration\
-$line_break\
-$character"""
+$lua\
+$nvim\
+$nodejs\
+$python\
+$rust\
+$elixir\
+$dart\
+$aws\
+$time\
+$cmd_duration
+$character\
+"""
+
+[fill]
+symbol = " "
+
+[username]
+format = " [╭─$user]($style)@"
+style_user = "bold purple"
+style_root = "bold purple"
+show_always = true
+
+[hostname]
+format = "[$hostname]($style) "
+style = "bold purple"
+trim_at = "-"
+ssh_only = false
+disabled = false
 
 [directory]
-truncation_length = 3
+style = "purple"
+truncation_length = 0
 truncate_to_repo = true
-style = "blue bold"
-
-[git_branch]
-format = "[$symbol$branch]($style) "
-symbol = " "
-style = "purple bold"
+truncation_symbol = "󰳏 "
 
 [git_status]
-format = "[$all_status$ahead_behind]($style) "
-style = "red bold"
-conflicted = "="
+style = "white"
 ahead = "⇡${count}"
-behind = "⇣${count}"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-untracked = "?"
-stashed = "$"
-modified = "!"
-staged = "+"
-renamed = "»"
-deleted = "✘"
-
-[python]
-format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
-symbol = "🐍 "
-style = "yellow bold"
-detect_extensions = ["py"]
-detect_files = ["pyproject.toml", "requirements.txt", "poetry.lock"]
-
-[nodejs]
-format = "[$symbol($version )]($style)"
-symbol = " "
-style = "green bold"
-
-[golang]
-format = "[$symbol($version )]($style)"
-symbol = " "
-style = "cyan bold"
+behind = "⇣${count}"
+deleted = "x"
 
 [cmd_duration]
-min_time = 2_000
-format = "[$duration]($style) "
-style = "yellow bold"
+min_time = 1
+style = "white"
+format = "[$duration]($style)"
+disabled = false
+
+[time]
+format = " 🕙 $time($style)"
+time_format = "%T"
+style = "bright-white"
 
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+success_symbol = " [╰─ ](bold purple)"
+error_symbol = " [×](bold red)"
+
+[status]
+symbol = "🔴"
+format = '[\[$symbol$status_common_meaning$status_signal_name$status_maybe_int\]]($style)'
+map_symbol = true
+disabled = false
+
+[aws]
+symbol = "  "
+format = '[$symbol($profile)(\[$duration\] )]($style)'
+
+[conda]
+symbol = " "
+
+[dart]
+symbol = " "
+
+[docker_context]
+symbol = " "
+format = "[$symbol$context]($style) "
+style = "blue"
+only_with_files = true
+detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
+detect_folders = []
+
+[elixir]
+symbol = " "
+
+[elm]
+symbol = " "
+
+[git_branch]
+symbol = " "
+format = '[$symbol$branch ]($style)'
+
+[golang]
+symbol = " "
+format = "[$symbol($version )]($style)"
+
+[hg_branch]
+symbol = " "
+
+[java]
+symbol = " "
+
+[julia]
+symbol = " "
+
+[haskell]
+symbol = "λ "
+
+[nim]
+symbol = " "
+
+[nix_shell]
+symbol = " "
+
+[package]
+symbol = " "
+format = "[$symbol$version ]($style)"
+
+[perl]
+symbol = " "
+
+[php]
+symbol = " "
+
+[python]
+symbol = " "
+#pyenv_version_name = true
+format = '[${symbol}(${version})(\($virtualenv\) )]($style)'
+style = "bold blue"
+pyenv_prefix = "venv "
+python_binary = ["./venv/bin/python", "python", "python3", "python2"]
+detect_extensions = ["py"]
+version_format = "v${raw}"
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = " "
+
+[scala]
+symbol = " "
+
+[shlvl]
+symbol = " "
+
+[swift]
+symbol = "ﯣ "
+
+[nodejs]
+symbol = " " 
+format = "[$symbol$version](bold green) "
+detect_files = ["package.json", ".node-version"]
+detect_folders = ["node_modules"]

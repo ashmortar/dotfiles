@@ -43,8 +43,7 @@ config.keys = {
 }
 
 -- OS-specific settings
-{{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-config.default_domain = 'WSL:Ubuntu'
-{{- end }}
-
+if os.getenv("WSL_DISTRO_NAME") then
+  config.default_domain = 'WSL:Ubuntu'
+end
 return config

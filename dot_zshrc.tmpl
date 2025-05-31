@@ -22,6 +22,9 @@ export VISUAL="nvim"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
+# ============ Path ====================
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
 {{- if eq .chezmoi.os "darwin" }}
 # macOS specific
 export HOMEBREW_NO_ANALYTICS=1
@@ -59,7 +62,9 @@ command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 
 # FZF configuration
 if command -v fzf &>/dev/null; then
-  source <(fzf --zsh)
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+  [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+  [ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
   export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
