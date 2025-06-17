@@ -2,21 +2,28 @@
 
 format = """
 $username\
-$host\
+$hostname\
 $directory\
 $git_branch\
 $git_status\
+$git_state\
 $fill\
 $package\
 $golang\
 $lua\
-$nvim\
 $nodejs\
 $python\
 $rust\
 $elixir\
 $dart\
+$terraform\
+$docker_context\
+$kubernetes\
 $aws\
+$gcloud\
+$azure\
+$memory_usage\
+$jobs\
 $time\
 $cmd_duration
 $character\
@@ -28,7 +35,7 @@ symbol = " "
 [username]
 format = " [╭─$user]($style)@"
 style_user = "bold purple"
-style_root = "bold purple"
+style_root = "bold red"  # Different color for root - safety!
 show_always = true
 
 [hostname]
@@ -42,29 +49,46 @@ disabled = false
 style = "purple"
 truncation_length = 0
 truncate_to_repo = true
-truncation_symbol = "󰳏 "
+truncation_symbol = "…/"  # Cleaner than "󰳏 "
+read_only = " 󰌾"  # Shows when directory is read-only
+home_symbol = "~"
+
+[git_branch]
+symbol = " "
+format = '[$symbol$branch ]($style)'
+style = "bold green"  # Make branch more visible
 
 [git_status]
 style = "white"
 ahead = "⇡${count}"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 behind = "⇣${count}"
-deleted = "x"
+deleted = "✘${count}"  # More descriptive
+modified = "!${count}"
+staged = "+${count}"
+untracked = "?${count}"
+conflicted = "=${count}"
+renamed = "»${count}"
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bright-yellow"
 
 [cmd_duration]
-min_time = 1
-style = "white"
-format = "[$duration]($style)"
+min_time = 2000  # Only show for slower commands
+style = "yellow"
+format = "[ $duration]($style)"
 disabled = false
 
 [time]
 format = " 🕙 $time($style)"
-time_format = "%T"
+time_format = "%H:%M"  # 24-hour format, no seconds
 style = "bright-white"
 
 [character]
 success_symbol = " [╰─ ](bold purple)"
-error_symbol = " [×](bold red)"
+error_symbol = " [╰─ ✗](bold red)"
+vimcmd_symbol = " [╰─ ](bold green)"  # Different color in vim mode
 
 [status]
 symbol = "🔴"
@@ -72,69 +96,81 @@ format = '[\[$symbol$status_common_meaning$status_signal_name$status_maybe_int\]
 map_symbol = true
 disabled = false
 
+# Enhanced language modules (keeping your existing ones)
 [aws]
-symbol = "  "
+symbol = " "
 format = '[$symbol($profile)(\[$duration\] )]($style)'
+style = "bold yellow"
+
+[gcloud]
+symbol = " "
+format = '[$symbol$account(@$domain)(\($project\))]($style) '
+style = "bold blue"
+
+[azure]
+symbol = " "
+format = "[$symbol($subscription)]($style) "
+style = "bold cyan"
 
 [conda]
-symbol = " "
+symbol = " "
 
 [dart]
 symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold blue"
 
 [docker_context]
-symbol = " "
+symbol = " "
 format = "[$symbol$context]($style) "
 style = "blue"
 only_with_files = true
 detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
-detect_folders = []
 
 [elixir]
-symbol = " "
-
-[elm]
-symbol = " "
-
-[git_branch]
-symbol = " "
-format = '[$symbol$branch ]($style)'
+symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold magenta"
 
 [golang]
-symbol = " "
+symbol = " "
 format = "[$symbol($version )]($style)"
+style = "bold cyan"
 
-[hg_branch]
-symbol = " "
+[kubernetes]
+symbol = " "
+format = '[$symbol$context( \($namespace\))]($style) '
+style = "bold blue"
+disabled = false
 
-[java]
-symbol = " "
+[lua]
+symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold blue"
 
-[julia]
-symbol = " "
+[nodejs]
+symbol = " " 
+format = "[$symbol($version)](bold green) "
+detect_files = ["package.json", ".node-version", ".nvmrc"]
+detect_folders = ["node_modules"]
 
-[haskell]
-symbol = "λ "
+[deno]
+symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold green"
 
-[nim]
-symbol = " "
-
-[nix_shell]
-symbol = " "
+[bun]
+symbol = " " 
+format = "[$symbol($version )]($style)"
+style = "bold yellow"
 
 [package]
-symbol = " "
+symbol = " "
 format = "[$symbol$version ]($style)"
-
-[perl]
-symbol = " "
-
-[php]
-symbol = " "
+style = "bold yellow"
 
 [python]
-symbol = " "
-#pyenv_version_name = true
+symbol = " "
 format = '[${symbol}(${version})(\($virtualenv\) )]($style)'
 style = "bold blue"
 pyenv_prefix = "venv "
@@ -142,23 +178,25 @@ python_binary = ["./venv/bin/python", "python", "python3", "python2"]
 detect_extensions = ["py"]
 version_format = "v${raw}"
 
-[ruby]
-symbol = " "
-
 [rust]
 symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold red"
 
-[scala]
-symbol = " "
+[terraform]
+symbol = " "
+format = "[$symbol$workspace]($style) "
+style = "bold purple"
 
-[shlvl]
-symbol = " "
+[jobs]
+symbol = "󱑡 "
+format = "[$symbol$number]($style) "
+style = "bold purple"
+number_threshold = 1
 
-[swift]
-symbol = "ﯣ "
+[memory_usage]
+format = "[ ${ram}]($style) "
+style = "bold yellow"
+disabled = false
+threshold = 70
 
-[nodejs]
-symbol = " " 
-format = "[$symbol$version](bold green) "
-detect_files = ["package.json", ".node-version"]
-detect_folders = ["node_modules"]
