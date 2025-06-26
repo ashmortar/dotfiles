@@ -77,18 +77,6 @@ return {
         },
       }
 
-      require('mason-lspconfig').setup {
-        ensure_installed = {
-          'basedpyright',
-          'ruff',
-          'ts_ls',
-          'gopls',
-          'lua_ls',
-        },
-        automatic_enable = true,
-        automatic_installation = true,
-      }
-
       local lspconfig = require 'lspconfig'
       local capabilities = vim.lsp.protocol.make_client_capabilities()
 
@@ -137,81 +125,92 @@ return {
 
       local python_path, venv_path = find_venv()
 
-      require('mason-lspconfig').setup_handlers {
-        function(server_name)
-          lspconfig[server_name].setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-          }
-        end,
+      require('mason-lspconfig').setup {
+        ensure_installed = {
+          'basedpyright',
+          'ruff',
+          'ts_ls',
+          'gopls',
+          'lua_ls',
+        },
+        automatic_enable = true,
+        automatic_installation = true,
+        handlers = {
+          function(server_name)
+            lspconfig[server_name].setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+            }
+          end,
 
-        ['lua_ls'] = function()
-          lspconfig.lua_ls.setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = {
-              Lua = {
-                workspace = {
-                  checkThirdParty = false,
-                },
-                telemetry = {
-                  enable = false,
-                },
-              },
-            },
-          }
-        end,
-
-        ['basedpyright'] = function()
-          lspconfig.basedpyright.setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = {
-              basedpyright = {
-                analysis = {
-                  typeCheckingMode = 'basic',
-                  autoImportCompletions = true,
-                  autoSearchPaths = true,
-                  useLibraryCodeForTypes = true,
-                },
-              },
-              python = {
-                pythonPath = python_path,
-                venvPath = venv_path,
-              },
-            },
-          }
-        end,
-
-        ['ruff'] = function()
-          lspconfig.ruff.setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            init_options = {
+          ['lua_ls'] = function()
+            lspconfig.lua_ls.setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
               settings = {
-                interpreter = { python_path },
-              },
-            },
-          }
-        end,
-
-        ['gopls'] = function()
-          lspconfig.gopls.setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = {
-              gopls = {
-                analyses = {
-                  unusedparams = true,
+                Lua = {
+                  workspace = {
+                    checkThirdParty = false,
+                  },
+                  telemetry = {
+                    enable = false,
+                  },
                 },
-                staticcheck = true,
-                gofumpt = true,
               },
-            },
-          }
-        end,
+            }
+          end,
 
-        ['ts_ls'] = function() end,
+          ['basedpyright'] = function()
+            lspconfig.basedpyright.setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+              settings = {
+                basedpyright = {
+                  analysis = {
+                    typeCheckingMode = 'basic',
+                    autoImportCompletions = true,
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                  },
+                },
+                python = {
+                  pythonPath = python_path,
+                  venvPath = venv_path,
+                },
+              },
+            }
+          end,
+
+          ['ruff'] = function()
+            lspconfig.ruff.setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+              init_options = {
+                settings = {
+                  interpreter = { python_path },
+                },
+              },
+            }
+          end,
+
+          ['gopls'] = function()
+            lspconfig.gopls.setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+              settings = {
+                gopls = {
+                  analyses = {
+                    unusedparams = true,
+                  },
+                  staticcheck = true,
+                  gofumpt = true,
+                },
+              },
+            }
+          end,
+
+          ['ts_ls'] = function() end,
+        },
       }
 
       require('typescript-tools').setup {
