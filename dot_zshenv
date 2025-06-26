@@ -1,0 +1,6 @@
+
+alias assume=". assume"
+
+fpath=(/Users/aaron/.granted/zsh_autocomplete/assume/ $fpath)
+
+fpath=(/Users/aaron/.granted/zsh_autocomplete/granted/ $fpath)

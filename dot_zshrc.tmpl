@@ -16,13 +16,6 @@ setopt AUTO_CD
 setopt INTERACTIVE_COMMENTS
 setopt NO_BEEP
 
-# ============ Environment ============
-export EDITOR="nvim"
-export VISUAL="nvim"
-
-# ============ Path ====================
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-
 {{- if eq .chezmoi.os "darwin" }}
 # macOS specific
 export HOMEBREW_NO_ANALYTICS=1
@@ -32,17 +25,8 @@ export BROWSER="wslview"
 {{- end }}
 
 # ============ Tool Initialization ============
-# Mise (must be early for path setup)
-[[ -f ~/.local/bin/mise ]] && eval "$(~/.local/bin/mise activate zsh)"
-
 # Starship prompt
 command -v starship &>/dev/null && eval "$(starship init zsh)"
-
-# Zoxide (better cd)
-command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
-
-# Direnv (project-specific env vars)
-command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 
 # ============ Completions & Plugins ============
 # Plugin loading
@@ -63,6 +47,14 @@ if command -v fzf &>/dev/null; then
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
   [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
   [ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
+
+  # FZF-Git integration (fancy git browser with ctrl-g bindings)
+  if [[ -f ~/.fzf-git.sh ]]; then
+    source ~/.fzf-git.sh
+  elif command -v brew &>/dev/null && [[ -f $(brew --prefix)/opt/fzf/shell/fzf-git.sh ]]; then
+    source $(brew --prefix)/opt/fzf/shell/fzf-git.sh
+  fi
+  
   export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
@@ -130,7 +122,7 @@ mkcd() {
 # ============ Atuin (Shell History) ============
 if command -v atuin &>/dev/null; then
   [[ -f ~/.atuin/bin/env ]] && source ~/.atuin/bin/env
-  eval "$(atuin init zsh --disable-up-arrow)"
+  eval "$(atuin init zsh)"
 fi
 
 # ============ Local Configuration ============
