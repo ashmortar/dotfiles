@@ -24,7 +24,20 @@ export HOMEBREW_NO_ANALYTICS=1
 export BROWSER="wslview"
 {{- end }}
 
-# ============ Tool Initialization ============
+# ============ Essential Tool Initialization ============
+# Mise (must be early for path setup)
+if [[ -f ~/.local/bin/mise ]]; then
+  eval "$(~/.local/bin/mise activate zsh)"
+elif [[ -f /opt/homebrew/bin/mise ]]; then
+  eval "$(/opt/homebrew/bin/mise activate zsh)"
+fi
+
+# Zoxide (better cd) - needed for tools like Claude Code
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+
+# Direnv (project-specific env vars)
+command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
+
 # Starship prompt
 command -v starship &>/dev/null && eval "$(starship init zsh)"
 
