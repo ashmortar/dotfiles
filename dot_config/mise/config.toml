@@ -1,0 +1,9 @@
+[tools]
+node = "lts"
+go = "latest"
+python = "3.11.10"
+
+[settings]
+not_found_auto_install = false
+idiomatic_version_file_enable_tools = ["node", "go"]
+
