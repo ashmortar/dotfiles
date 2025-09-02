@@ -64,8 +64,8 @@ return {
       yaml = { enable = true, properties = { enable = true } },
     }
 
-    vim.keymap.set('n', 'mp', 'Markview toggle', { desc = 'Toggle Markview' })
-    vim.keymap.set('n', 'ms', 'Markview splitToggle', { desc = 'Toggle Split View' })
-    vim.keymap.set('n', 'mh', 'Markview hybridToggle', { desc = 'Toggle Hybrid Mode' })
+    vim.keymap.set('n', '<leader>mp', ':Markview toggle<CR>', { desc = 'Toggle Markview' })
+    vim.keymap.set('n', '<leader>ms', ':Markview splitToggle<CR>', { desc = 'Toggle Split View' })
+    vim.keymap.set('n', '<leader>mh', ':Markview hybridToggle<CR>', { desc = 'Toggle Hybrid Mode' })
   end,
 }

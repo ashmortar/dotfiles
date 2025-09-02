@@ -2,6 +2,7 @@
 node = "lts"
 go = "latest"
 python = "3.11.10"
+pnpm = "latest"
 
 [settings]
 not_found_auto_install = false
