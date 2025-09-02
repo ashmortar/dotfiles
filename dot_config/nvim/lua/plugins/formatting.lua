@@ -61,6 +61,7 @@ return {
           css = { 'prettier' },
           go = { 'goimports', 'gofumpt' },
           lua = { 'stylua' },
+          templ = { 'templ' },  -- ADD THIS LINE
         },
         format_on_save = {
           timeout_ms = 500,

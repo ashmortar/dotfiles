@@ -132,6 +132,8 @@ return {
           'ts_ls',
           'gopls',
           'lua_ls',
+          'templ',
+          'html-lsp',
         },
         automatic_enable = true,
         automatic_installation = true,
@@ -209,10 +211,36 @@ return {
             }
           end,
 
-          ['ts_ls'] = function() end,
+          ['ts_ls'] = function() end,  -- Handled by typescript-tools
+
+          ['templ'] = function()
+            lspconfig.templ.setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+              filetypes = { 'templ' },
+            }
+          end,
+
+          ['html-lsp'] = function()
+            lspconfig.html.setup {
+              capabilities = capabilities,
+              on_attach = on_attach,
+              filetypes = { 'html', 'templ' },
+            }
+          end,
         },
       }
 
+      -- HTMX (ThePrimeagen's htmx-lsp, installed via cargo)
+      lspconfig.htmx.setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        cmd = { 'htmx-lsp' },
+        filetypes = { 'html', 'templ' },
+        single_file_support = true,
+      }
+
+      -- TypeScript Tools (replaces ts_ls)
       require('typescript-tools').setup {
         on_attach = on_attach,
         settings = {

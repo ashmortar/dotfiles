@@ -2,8 +2,18 @@
 export EDITOR="nvim"
 export VISUAL="nvim"
 
+{{- if eq .chezmoi.os "linux" }}
+{{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# WSL-specific browser
+export BROWSER="wslview"
+{{-   end }}
+{{- end }}
+
 # ============ Path Setup ============
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+# Add Turso if it exists
+[[ -d "$HOME/.turso" ]] && export PATH="$HOME/.turso:$PATH"
 
 # ============ Essential Tool Initialization ============
 # Mise (must be early for path setup)
@@ -14,13 +24,19 @@ elif [[ -f /opt/homebrew/bin/mise ]]; then
 fi
 
 # Zoxide (better cd) - needed for tools like Claude Code
-command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+  # Optional: alias cd to z
+  # alias cd='z'
+fi
 
 # Direnv (project-specific env vars)
 command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 
+{{- if eq .chezmoi.os "darwin" }}
 # ============ Granted (AWS Credential Management) ============
 alias assume=". assume"
 
-fpath=(/Users/aaron/.granted/zsh_autocomplete/assume/ $fpath)
-fpath=(/Users/aaron/.granted/zsh_autocomplete/granted/ $fpath)
+fpath=($HOME/.granted/zsh_autocomplete/assume/ $fpath)
+fpath=($HOME/.granted/zsh_autocomplete/granted/ $fpath)
+{{- end }}
