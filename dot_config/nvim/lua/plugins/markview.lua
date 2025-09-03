@@ -10,22 +10,25 @@ return {
     local presets = require 'markview.presets'
 
     markview.setup {
+      -- Preview configuration - ALL preview settings go here
+      preview = {
+        enable = true,  -- Start with preview enabled (replaces initial_state)
+        modes = { 'n', 'no', 'c' },  -- Show preview in these modes
+        hybrid_modes = { 'i' },  -- Auto-hide in insert mode
+        icon_provider = 'mini',  -- Use mini icons since you have it
+        filetypes = { 'markdown', 'md', 'rmd', 'quarto' },
+        buf_ignore = { 'nofile' },
+        debounce = 50,
+      },
+      
+      -- Hide the load order warning
       experimental = {
+        check_rtp_message = false,
         link_open_alerts = false,
         prefer_nvim = true,
-        check_rtp_message = false, -- Hide the warning
       },
-      preview = {
-        enable = true,
-        filetypes = { 'md', 'rmd', 'quarto' },
-        ignore_buftypes = { 'nofile' },
-        modes = { 'n', 'no', 'c' },
-        hybrid_modes = { 'n' },
-        icon_provider = 'mini',
-        debounce = 50,
-        draw_range = { vim.o.lines, vim.o.lines },
-        edit_range = { 1, 0 },
-      },
+      
+      -- Markdown rendering options
       markdown = {
         enable = true,
         headings = presets.headings.slanted,
@@ -60,12 +63,21 @@ return {
         hyperlinks = { enable = true, hl = 'MarkviewHyperlink' },
         images = { enable = true, hl = 'MarkviewImage' },
       },
-      latex = { enable = true, symbols = { enable = true } },
-      yaml = { enable = true, properties = { enable = true } },
+      latex = { enable = true },
+      yaml = { enable = true },
     }
-
-    vim.keymap.set('n', '<leader>mp', ':Markview toggle<CR>', { desc = 'Toggle Markview' })
-    vim.keymap.set('n', '<leader>ms', ':Markview splitToggle<CR>', { desc = 'Toggle Split View' })
-    vim.keymap.set('n', '<leader>mh', ':Markview hybridToggle<CR>', { desc = 'Toggle Hybrid Mode' })
+    
+    -- Keybindings using the correct commands
+    vim.keymap.set('n', '<leader>mt', function()
+      vim.cmd('Markview toggle')
+    end, { desc = 'Toggle Markdown Preview' })
+    
+    vim.keymap.set('n', '<leader>ms', function()
+      vim.cmd('Markview splitToggle')
+    end, { desc = 'Toggle Split View' })
+    
+    vim.keymap.set('n', '<leader>mh', function()
+      vim.cmd('Markview hybridToggle')
+    end, { desc = 'Toggle Hybrid Mode' })
   end,
 }
