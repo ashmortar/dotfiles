@@ -16,22 +16,12 @@ export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 [[ -d "$HOME/.turso" ]] && export PATH="$HOME/.turso:$PATH"
 
 # ============ Essential Tool Initialization ============
-# Mise (must be early for path setup)
-if [[ -f ~/.local/bin/mise ]]; then
-  eval "$(~/.local/bin/mise activate zsh)"
-elif [[ -f /opt/homebrew/bin/mise ]]; then
-  eval "$(/opt/homebrew/bin/mise activate zsh)"
-fi
-
 # Zoxide (better cd) - needed for tools like Claude Code
 if command -v zoxide &>/dev/null; then
   eval "$(zoxide init zsh)"
   # Optional: alias cd to z
   # alias cd='z'
 fi
-
-# Direnv (project-specific env vars)
-command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 
 {{ if eq .chezmoi.os "darwin" -}}
 # ============ Granted (AWS Credential Management) ============
