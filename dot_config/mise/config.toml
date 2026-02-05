@@ -1,8 +1,9 @@
 [tools]
 node = "24.10.0"
-go = "1.25.3"
+go = "latest"
 python = "3.11.10"
 pnpm = "latest"
+rust = "latest"
 
 [settings]
 not_found_auto_install = false
