@@ -158,13 +158,13 @@ if ! command -v delta &>/dev/null; then
 fi
 
 # tree-sitter-cli (needed for treesitter parser compilation)
+# Prefer npm (prebuilt binary, fast) over cargo (compiles from source, slow on arm64)
 if ! command -v tree-sitter &>/dev/null; then
   if command -v npm &>/dev/null; then
     npm install -g tree-sitter-cli
-  elif command -v cargo &>/dev/null; then
-    cargo install tree-sitter-cli
   else
-    echo "⚠️  tree-sitter-cli not installed. Install npm or cargo first."
+    # npm not yet available (mise installs it later), defer to deps script
+    echo "⚠️  tree-sitter-cli deferred -- npm not yet available. Run 'npm install -g tree-sitter-cli' after mise setup."
   fi
 fi
 

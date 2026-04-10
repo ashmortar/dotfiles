@@ -19,12 +19,9 @@ mise use -g rust@{{ .rust_version }}
 
 # Install global packages after tools are ready
 echo "📦 Installing global npm packages..."
-mise exec -- npm install -g typescript typescript-language-server prettier eslint neovim
+mise exec -- npm install -g typescript typescript-language-server prettier eslint neovim tree-sitter-cli
 
 echo "📦 Installing Python tools..."
 mise exec -- pip install --user poetry mypy ruff pynvim
-
-echo "📦 Installing Rust/Cargo tools..."
-mise exec -- cargo install htmx-lsp
 
 echo "✅ Mise configuration complete!"
