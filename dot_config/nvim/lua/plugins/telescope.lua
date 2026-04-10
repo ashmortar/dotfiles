@@ -1,39 +1,32 @@
-return {
-  {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = "make",
-      },
+local telescope = require('telescope')
+
+telescope.setup({
+  defaults = {
+    file_ignore_patterns = { 'node_modules', '.git/' },
+    layout_strategy = 'horizontal',
+    layout_config = {
+      horizontal = { preview_width = 0.55 },
     },
-    keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
-      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
-      { "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search in buffer" },
-    },
-    config = function()
-      local telescope = require("telescope")
-      local actions = require("telescope.actions")
-      
-      telescope.setup({
-        defaults = {
-          mappings = {
-            i = {
-              ["<C-j>"] = actions.move_selection_next,
-              ["<C-k>"] = actions.move_selection_previous,
-              ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-            },
-          },
-        },
-      })
-      
-      telescope.load_extension("fzf")
-    end,
   },
-}
+  extensions = {
+    fzf = {},
+    undo = {},
+  },
+})
+
+-- Load extensions
+telescope.load_extension('fzf')
+telescope.load_extension('undo')
+
+local builtin = require('telescope.builtin')
+
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help tags' })
+vim.keymap.set('n', '<leader>fr', builtin.oldfiles, { desc = 'Recent files' })
+vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = 'Search current buffer' })
+vim.keymap.set('n', '<leader>fu', '<cmd>Telescope undo<cr>', { desc = 'Undo tree' })
+vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = 'Search diagnostics' })
+vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Search keymaps' })
+vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = 'Find buffers' })

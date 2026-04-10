@@ -1,37 +1,42 @@
--- Better default keymaps
-local keymap = vim.keymap.set
+local map = vim.keymap.set
 
--- Save and quit
-keymap("n", "<leader>w", ":w<CR>", { desc = "Save file" })
-keymap("n", "<leader>q", ":q<CR>", { desc = "Quit" })
-keymap("n", "<leader>Q", ":qa<CR>", { desc = "Quit all" })
+-- Clear search highlights
+map('n', '<Esc>', '<cmd>nohlsearch<cr>', { desc = 'Clear search highlights' })
 
--- Better window navigation
-keymap("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-keymap("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
-keymap("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
-keymap("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+-- Save / Quit
+map('n', '<leader>w', '<cmd>w<cr>', { desc = 'Save' })
+map('n', '<leader>q', '<cmd>q<cr>', { desc = 'Quit' })
+map('n', '<leader>Q', '<cmd>qa<cr>', { desc = 'Quit all' })
+
+-- Buffers
+map('n', '<leader>bn', '<cmd>bnext<cr>', { desc = 'Next buffer' })
+map('n', '<leader>bp', '<cmd>bprevious<cr>', { desc = 'Previous buffer' })
+map('n', '<leader>bd', '<cmd>bdelete<cr>', { desc = 'Delete buffer' })
+
+-- Window navigation (tmux-nav overrides these)
+map('n', '<C-h>', '<C-w>h', { desc = 'Move to left window' })
+map('n', '<C-j>', '<C-w>j', { desc = 'Move to lower window' })
+map('n', '<C-k>', '<C-w>k', { desc = 'Move to upper window' })
+map('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
 
 -- Resize windows
-keymap("n", "<M-h>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
-keymap("n", "<M-j>", ":resize -2<CR>", { desc = "Decrease window height" })
-keymap("n", "<M-k>", ":resize +2<CR>", { desc = "Increase window height" })
-keymap("n", "<M-l>", ":vertical resize +2<CR>", { desc = "Increase window width" })
-
--- Buffer navigation
-keymap("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
-keymap("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
-keymap("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer" })
-
--- Clear search highlighting
-keymap("n", "<Esc>", ":noh<CR>", { desc = "Clear search highlights" })
-
--- Better indenting
-keymap("v", "<", "<gv", { desc = "Indent left" })
-keymap("v", ">", ">gv", { desc = "Indent right" })
+map('n', '<M-h>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease width' })
+map('n', '<M-j>', '<cmd>resize -2<cr>', { desc = 'Decrease height' })
+map('n', '<M-k>', '<cmd>resize +2<cr>', { desc = 'Increase height' })
+map('n', '<M-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase width' })
 
 -- Move lines
-keymap("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
-keymap("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
-keymap("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
-keymap("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+map('n', '<A-j>', '<cmd>m .+1<cr>==', { desc = 'Move line down' })
+map('n', '<A-k>', '<cmd>m .-2<cr>==', { desc = 'Move line up' })
+map('v', '<A-j>', ":m '>+1<cr>gv=gv", { desc = 'Move selection down' })
+map('v', '<A-k>', ":m '<-2<cr>gv=gv", { desc = 'Move selection up' })
+
+-- Better indenting (keep selection)
+map('v', '<', '<gv', { desc = 'Indent left' })
+map('v', '>', '>gv', { desc = 'Indent right' })
+
+-- Diagnostic navigation
+map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
+map('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
+map('n', '<leader>xd', vim.diagnostic.open_float, { desc = 'Line diagnostics' })
+map('n', '<leader>xq', vim.diagnostic.setloclist, { desc = 'Diagnostics to loclist' })

@@ -6,7 +6,7 @@ config.front_end = "WebGpu"
 config.webgpu_power_preference = "HighPerformance"
 
 -- Appearance
-config.color_scheme = "tokyonight"
+config.color_scheme = "One Dark (Gogh)"
 config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = 13.0
 config.window_decorations = "RESIZE"

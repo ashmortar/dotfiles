@@ -12,10 +12,10 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 # Configure global tools
-mise use -g node@lts
-mise use -g python@3.12
-mise use -g go@latest
-mise use -g rust@latest
+mise use -g node@{{ .node_version }}
+mise use -g python@{{ .python_version }}
+mise use -g go@{{ .go_version }}
+mise use -g rust@{{ .rust_version }}
 
 # Install global packages after tools are ready
 echo "📦 Installing global npm packages..."
@@ -25,7 +25,6 @@ echo "📦 Installing Python tools..."
 mise exec -- pip install --user poetry mypy ruff pynvim
 
 echo "📦 Installing Rust/Cargo tools..."
-# Install htmx-lsp for Neovim
 mise exec -- cargo install htmx-lsp
 
 echo "✅ Mise configuration complete!"

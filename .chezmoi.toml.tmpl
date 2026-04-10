@@ -1,9 +1,17 @@
 {{- $name := promptStringOnce . "name" "What is your full name" -}}
 {{- $email := promptStringOnce . "email" "What is your email address" -}}
+{{- $node_version := promptStringOnce . "node_version" "Node.js version (e.g. lts, 22, latest)" "lts" -}}
+{{- $python_version := promptStringOnce . "python_version" "Python version (e.g. 3.12, 3.13, latest)" "3.12" -}}
+{{- $go_version := promptStringOnce . "go_version" "Go version (e.g. 1.23, latest)" "latest" -}}
+{{- $rust_version := promptStringOnce . "rust_version" "Rust version (e.g. stable, latest)" "latest" -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
+    node_version = {{ $node_version | quote }}
+    python_version = {{ $python_version | quote }}
+    go_version = {{ $go_version | quote }}
+    rust_version = {{ $rust_version | quote }}
 
 [edit]
     command = "nvim"
