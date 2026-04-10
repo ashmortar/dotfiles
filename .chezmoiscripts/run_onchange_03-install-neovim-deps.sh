@@ -35,4 +35,11 @@ else
   echo "⚠️  Neovim not found in PATH. Check ~/.local/bin is in PATH."
 fi
 
+# Build telescope-fzf-native (requires make + gcc)
+FZF_NATIVE_DIR="$HOME/.local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"
+if [[ -d "$FZF_NATIVE_DIR" ]] && [[ ! -f "$FZF_NATIVE_DIR/build/libfzf.so" ]] && [[ ! -f "$FZF_NATIVE_DIR/build/libfzf.dylib" ]]; then
+  echo "🔨 Building telescope-fzf-native..."
+  make -C "$FZF_NATIVE_DIR"
+fi
+
 echo "✅ Neovim dependencies check complete!"
