@@ -60,4 +60,7 @@ vim.pack.add({
 
   -- Tmux
   gh('christoomey/vim-tmux-navigator'),
+
+  -- Splash screen
+  gh('Amansingh-afk/milli.nvim'),
 }, { confirm = false })
