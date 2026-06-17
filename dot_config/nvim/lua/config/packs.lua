@@ -16,6 +16,7 @@ vim.pack.add({
   gh('mason-org/mason.nvim'),
   gh('mason-org/mason-lspconfig.nvim'),
   gh('WhoIsSethDaniel/mason-tool-installer.nvim'),
+  gh('saghen/blink.lib'),
   gh('saghen/blink.cmp'),
 
   -- Treesitter (archived repo, main branch for 0.12)
@@ -64,3 +65,16 @@ vim.pack.add({
   -- Splash screen
   gh('Amansingh-afk/milli.nvim'),
 }, { confirm = false })
+
+-- vim.pack does not run plugin build steps, so drive them off PackChanged
+vim.api.nvim_create_autocmd('PackChanged', {
+  callback = function(ev)
+    local name, kind, path = ev.data.spec.name, ev.data.kind, ev.data.path
+    if kind ~= 'install' and kind ~= 'update' then return end
+    if name == 'blink.cmp' then
+      require('blink.cmp').build():pwait()
+    elseif name == 'telescope-fzf-native.nvim' then
+      vim.system({ 'make' }, { cwd = path }):wait()
+    end
+  end,
+})
